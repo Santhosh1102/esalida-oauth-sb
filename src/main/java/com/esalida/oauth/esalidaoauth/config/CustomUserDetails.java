@@ -2,6 +2,7 @@ package com.esalida.oauth.esalidaoauth.config;
 
 
 import com.esalida.oauth.esalidaoauth.models.Role;
+import com.esalida.oauth.esalidaoauth.models.Tenant;
 import com.esalida.oauth.esalidaoauth.models.User;
 import com.esalida.oauth.esalidaoauth.models.UserProfile;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,30 +13,28 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Provides a basic implementation of the UserDetails interface
- */
 public class CustomUserDetails implements UserDetails {
 
+    private static final long serialVersionUID = -5137669810769764071L;
     private Collection<? extends GrantedAuthority> authorities;
     private String password;
     private String username;
-    private UserProfile userProfile;
+    private UserProfile userProfile = new UserProfile();
     private Long userId;
+    private Tenant tenant;
 
-    public CustomUserDetails(User user,UserProfile userProfile) {
+
+    public CustomUserDetails(User user) {
         this.username = user.getUserName();
         this.password = user.getPassword();
         this.authorities = translate(user.getRoles());
-        this.userProfile=userProfile;
         this.userId=user.getId();
     }
 
-    /**
-     * Translates the List<Role> to a List<GrantedAuthority>
-     * @param roles the input list of roles.
-     * @return a list of granted authorities
-     */
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
     private Collection<? extends GrantedAuthority> translate(List<Role> roles) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : roles) {
@@ -46,6 +45,12 @@ public class CustomUserDetails implements UserDetails {
             authorities.add(new SimpleGrantedAuthority(name));
         }
         return authorities;
+    }
+
+    public void setUser(User user){
+        this.username = user.getUserName();
+        this.password = user.getPassword();
+        this.authorities = translate(user.getRoles());
     }
 
     public Long getUserId() {
@@ -105,10 +110,24 @@ public class CustomUserDetails implements UserDetails {
     }
 
     public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
+        this.userProfile.setUserId(userProfile.getUserId());
+        this.userProfile.setFirstName(userProfile.getFirstName());
+        this.userProfile.setLastName(userProfile.getLastName());
+
+
     }
 
     public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
         this.authorities = authorities;
     }
+
+    public Tenant getTenant() {
+        return tenant;
+    }
+
+    public void setTenant(Tenant tenant) {
+        this.tenant = tenant;
+    }
+
+
 }

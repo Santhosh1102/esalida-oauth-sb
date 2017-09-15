@@ -28,16 +28,24 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findByUsername(String username) {
         String QUERY_USER = "select * from user where userName=:userName";
-//        String QUERY_ROLES = "select role.id,role.name from role \n" +
-//                "INNER JOIN user_role on user_role.roleId = role.id\n" +
-//                "INNER JOIN user on user.id =user_role.userId\n" +
-//                "where user.id=:userID";
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("userName", username)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+            return user;
+        }
+    }
+
+    @Override
+    public User findById(long userId) {
+        String QUERY_USER_BY_ID = "select * from user where id=:userId";
         String QUERY_ROLES = "select role.id,role.name from role \n" +
                 "where role.id in ( select roleId from user_role where userId=:userId)";
 
         try(Connection con = sql2o.open()) {
-            User user =con.createQuery(QUERY_USER)
-                    .addParameter("userName", username)
+            User user =con.createQuery(QUERY_USER_BY_ID)
+                    .addParameter("userId", userId)
                     .executeAndFetchFirst(User.class);
             logger.debug("Found users:{}",user);
             if(user==null){

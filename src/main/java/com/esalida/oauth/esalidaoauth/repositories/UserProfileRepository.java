@@ -6,7 +6,8 @@ import com.esalida.oauth.esalidaoauth.models.UserProfile;
 
 public interface UserProfileRepository {
 
-     UserProfile getUserProfileByUser(User user);
+    UserProfile getUserProfileByUser(User user);
     UserProfile getUserProfileByUserId(Long userId);
+    User addUser(User user);
 
 }

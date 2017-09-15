@@ -31,10 +31,9 @@ public class EsalidaOauthApplication {
 	}
 
 	private UserDetailsService userDetailsService(UserService userService) {
-		return username -> {
-            User user = userService.findUserByName(username);
-            UserProfile userProfile = userService.getUserProfileByUser(user);
-		    return new CustomUserDetails(user,userProfile);
-        };
+		return (userName) ->{
+			CustomUserDetails customUserDetails = userService.getCustomerUserDetailsByUserName(userName);
+			return customUserDetails;
+		};
 	}
 }

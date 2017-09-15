@@ -37,4 +37,9 @@ public class UserProfileRespositoryImpl implements UserProfileRepository{
     public UserProfile getUserProfileByUserId(Long userId) {
         return null;
     }
+
+    @Override
+    public User addUser(User user) {
+        return null;
+    }
 }
