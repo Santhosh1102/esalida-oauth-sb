@@ -17,7 +17,7 @@ import java.util.List;
 @Service
 public class UserService {
 
-    private final UserRepository repo;
+    private final UserRepository userRepository;
 
     private final UserProfileRepository userProfileRepository;
 
@@ -30,11 +30,11 @@ public class UserService {
 
 
     @Autowired
-    public UserService(UserRepository repo, UserProfileRepository userProfileRepository,
+    public UserService(UserRepository userRepository, UserProfileRepository userProfileRepository,
                        UserRoleRepository userRoleRepository,
                        RoleRepository roleRepository,
                        TenantRepository tenantRepository) {
-        this.repo = repo;
+        this.userRepository = userRepository;
         this.userProfileRepository = userProfileRepository;
         this.userRoleRepository=userRoleRepository;
         this.roleRepository=roleRepository;
@@ -47,7 +47,7 @@ public class UserService {
     }
 
     public  User findUserByName(String userName){
-        User user = repo.findByUsername(userName);
+        User user = userRepository.findByUsername(userName);
         if(user!=null){
             List<Role> roles = roleRepository.getRolesForUserId(user.getId());
             user.setRoles(roles);
@@ -55,7 +55,7 @@ public class UserService {
         return user;
     }
 
-    public CustomUserDetails    getCustomerUserDetailsByUserName(String userName){
+    public CustomUserDetails getCustomerUserDetailsByUserName(String userName){
 
        User user = findUserByName(userName);
        if(user!=null){
@@ -73,16 +73,16 @@ public class UserService {
 
 
     public  User findUserById(long userId){
-        return repo.findById(userId);
+        return userRepository.findById(userId);
     }
 
     public UserProfile getUserProfileByUser(User user){
-       return userProfileRepository.getUserProfileByUser(user);
+       return userProfileRepository.getUserProfileByUserId(user.getId());
     }
 
     public void save(User user){
         user.setPassword(getPasswordEncoder().encode(user.getPassword()));
-        repo.save(user);
+        userRepository.save(user);
     }
 
     public List<Role> updateUserRoleAsAdmin(User user){

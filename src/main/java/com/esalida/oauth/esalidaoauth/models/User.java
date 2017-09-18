@@ -14,7 +14,7 @@ public class User {
     private Date created_at;
     private Date updated_at;
 
-    User() {}
+    public User() {}
 
     public User(String userName, String email, String password, List<Role> roles, Long tenantId) {
         this.userName = userName;

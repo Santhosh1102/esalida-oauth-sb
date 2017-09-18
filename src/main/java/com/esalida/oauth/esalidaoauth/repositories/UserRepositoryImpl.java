@@ -61,16 +61,49 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void save(User user){
-        String QUERY_USER_INSERT = "INSERT INTO `esalidaoauth`.`user`(`userName`,`email`,`password`,`tenantId`)\n" +
+    public User save(User user){
+        String QUERY_USER_INSERT = "INSERT INTO `user`(`userName`,`email`,`password`,`tenantId`)\n" +
                 "VALUES(:userName,:email,:password,:tenantId);";
         try(Connection con = sql2o.open()) {
-           con.createQuery(QUERY_USER_INSERT)
+            long insertedId = (long) con.createQuery(QUERY_USER_INSERT)
                    .addParameter("userName",user.getUserName())
                    .addParameter("email",user.getUserName())
                    .addParameter("password",user.getPassword())
                    .addParameter("tenantId",user.getTenantId())
-                   .executeUpdate();
+                   .executeUpdate()
+                   .getKey();
+            return findById(insertedId);
+        }
+    }
+
+
+    @Override
+    public User findByEmailAndTenantId(String email, Long tenantId){
+        String QUERY_USER = "select * from user where email=:email and tenantId=:tenantId";
+        System.out.println(email+" "+tenantId+"----------");
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("email", email)
+                    .addParameter("tenantId", tenantId)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+            return user;
+        }
+    }
+
+    @Override
+    public User findByUsernameAndTenantId(String username, Long tenantId){
+        String QUERY_USER = "select * from user where username=:username and tenantId=:tenantId";
+        System.out.println(username+" "+tenantId+"+++++++++");
+
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("username", username)
+                    .addParameter("tenantId", tenantId)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+
+            return user;
         }
     }
 }

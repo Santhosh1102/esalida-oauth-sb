@@ -10,6 +10,8 @@ import com.esalida.oauth.esalidaoauth.models.User;
 public interface UserRepository {
     User findByUsername(String username);
     User findById(long userId);
-    void save(User user);
+    User save(User user);
+    User findByEmailAndTenantId(String email, Long tenantId);
+    User findByUsernameAndTenantId(String username, Long tenantId);
 
 }
