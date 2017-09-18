@@ -28,16 +28,24 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findByUsername(String username) {
         String QUERY_USER = "select * from user where userName=:userName";
-//        String QUERY_ROLES = "select role.id,role.name from role \n" +
-//                "INNER JOIN user_role on user_role.roleId = role.id\n" +
-//                "INNER JOIN user on user.id =user_role.userId\n" +
-//                "where user.id=:userID";
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("userName", username)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+            return user;
+        }
+    }
+
+    @Override
+    public User findById(long userId) {
+        String QUERY_USER_BY_ID = "select * from user where id=:userId";
         String QUERY_ROLES = "select role.id,role.name from role \n" +
                 "where role.id in ( select roleId from user_role where userId=:userId)";
 
         try(Connection con = sql2o.open()) {
-            User user =con.createQuery(QUERY_USER)
-                    .addParameter("userName", username)
+            User user =con.createQuery(QUERY_USER_BY_ID)
+                    .addParameter("userId", userId)
                     .executeAndFetchFirst(User.class);
             logger.debug("Found users:{}",user);
             if(user==null){
@@ -53,16 +61,49 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public void save(User user){
-        String QUERY_USER_INSERT = "INSERT INTO `esalidaoauth`.`user`(`userName`,`email`,`password`,`tenantId`)\n" +
+    public User save(User user){
+        String QUERY_USER_INSERT = "INSERT INTO `user`(`userName`,`email`,`password`,`tenantId`)\n" +
                 "VALUES(:userName,:email,:password,:tenantId);";
         try(Connection con = sql2o.open()) {
-           con.createQuery(QUERY_USER_INSERT)
+            long insertedId = (long) con.createQuery(QUERY_USER_INSERT)
                    .addParameter("userName",user.getUserName())
                    .addParameter("email",user.getUserName())
                    .addParameter("password",user.getPassword())
                    .addParameter("tenantId",user.getTenantId())
-                   .executeUpdate();
+                   .executeUpdate()
+                   .getKey();
+            return findById(insertedId);
+        }
+    }
+
+
+    @Override
+    public User findByEmailAndTenantId(String email, Long tenantId){
+        String QUERY_USER = "select * from user where email=:email and tenantId=:tenantId";
+        System.out.println(email+" "+tenantId+"----------");
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("email", email)
+                    .addParameter("tenantId", tenantId)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+            return user;
+        }
+    }
+
+    @Override
+    public User findByUsernameAndTenantId(String username, Long tenantId){
+        String QUERY_USER = "select * from user where username=:username and tenantId=:tenantId";
+        System.out.println(username+" "+tenantId+"+++++++++");
+
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("username", username)
+                    .addParameter("tenantId", tenantId)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+
+            return user;
         }
     }
 }

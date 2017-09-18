@@ -7,7 +7,7 @@ public class Role {
     private Long id;
     String name;
 
-    Role() {}
+    public Role() {}
 
     public Role(String name) {
         this.name = name;
@@ -20,4 +20,5 @@ public class Role {
     public void setName(String name) {
         this.name = name;
     }
+
 }
