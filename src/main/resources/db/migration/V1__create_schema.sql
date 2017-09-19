@@ -67,16 +67,6 @@ CREATE TABLE `schema_version` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `schema_version`
---
-
-LOCK TABLES `schema_version` WRITE;
-/*!40000 ALTER TABLE `schema_version` DISABLE KEYS */;
-INSERT INTO `schema_version` VALUES (1,'1','<< Flyway Baseline >>','BASELINE','<< Flyway Baseline >>',NULL,'root','2017-09-14 09:47:23',0,1);
-/*!40000 ALTER TABLE `schema_version` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `tenant`
 --
 
@@ -85,9 +75,9 @@ DROP TABLE IF EXISTS `tenant`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tenant` (
   `id` bigint(20) NOT NULL,
-  `tenant_name` varchar(45) DEFAULT NULL,
-  `tenant_domain` varchar(45) DEFAULT NULL,
-  `tenant_db_name` varchar(45) DEFAULT NULL,
+  `tenantName` varchar(45) DEFAULT NULL,
+  `tenantDomain` varchar(45) DEFAULT NULL,
+  `tenantDbName` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -129,7 +119,10 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (4,'murthyavsn','murthyavsn','$2a$10$rNSc5HNZhBvPIN99N.t3POzGABoCuWFyGOE6UM7YsQD7b7txXlOQq','2017-09-14 10:08:34','2017-09-14 10:08:34',1001);
+INSERT INTO `user` VALUES (1,'santhosh','agirusantosh@gmail.com','$2a$10$rNSc5HNZhBvPIN99N.t3POzGABoCuWFyGOE6UM7YsQD7b7txXlOQq','2017-09-14 10:08:34','2017-09-14 10:08:34',1001);
+INSERT INTO `user` VALUES (2,'murthyavsn','murthyavsn@gmail.com','$2a$10$rNSc5HNZhBvPIN99N.t3POzGABoCuWFyGOE6UM7YsQD7b7txXlOQq','2017-09-14 10:08:34','2017-09-14 10:08:34',1001);
+INSERT INTO `user` VALUES (3,'sravani','sravani@gmailcom','$2a$10$rNSc5HNZhBvPIN99N.t3POzGABoCuWFyGOE6UM7YsQD7b7txXlOQq','2017-09-14 10:08:34','2017-09-14 10:08:34',1001);
+INSERT INTO `user` VALUES (4,'madhu','madhu@gmail.com','$2a$10$rNSc5HNZhBvPIN99N.t3POzGABoCuWFyGOE6UM7YsQD7b7txXlOQq','2017-09-14 10:08:34','2017-09-14 10:08:34',1001);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,8 +146,10 @@ CREATE TABLE `user_profile` (
 -- Dumping data for table `user_profile`
 --
 
+
 LOCK TABLES `user_profile` WRITE;
 /*!40000 ALTER TABLE `user_profile` DISABLE KEYS */;
+INSERT INTO `user_profile` VALUES (3,'Sravani','Perumalla'),(4,'Madhu','Kudala');
 /*!40000 ALTER TABLE `user_profile` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -181,9 +176,9 @@ CREATE TABLE `user_role` (
 
 LOCK TABLES `user_role` WRITE;
 /*!40000 ALTER TABLE `user_role` DISABLE KEYS */;
+INSERT INTO `user_role` VALUES (1,1),(2,3),(3,2),(4,2);
 /*!40000 ALTER TABLE `user_role` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
@@ -219,3 +214,36 @@ CREATE TABLE `oauth_refresh_token` (
   `authentication` blob,
   PRIMARY KEY (`token_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+
+
+
+
+CREATE DATABASE IF NOT EXISTS estecnicslabscom;
+
+DROP TABLE IF EXISTS estecnicslabscom.`team`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+
+CREATE TABLE estecnicslabscom.`team` (
+  `managerId` bigint(20) DEFAULT NULL,
+  `userId` bigint(20) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `team_manager_id_idx` (`managerId`),
+  KEY `team_manager_user_idx` (`userId`),
+  CONSTRAINT `team_manager_id` FOREIGN KEY (`managerId`) REFERENCES `esalidaoauth`.`user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `team_manager_user` FOREIGN KEY (`userId`) REFERENCES `esalidaoauth`.`user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `team`
+--
+
+LOCK TABLES estecnicslabscom.`team` WRITE;
+/*!40000 ALTER TABLE estecnicslabscom.`team` DISABLE KEYS */;
+INSERT INTO estecnicslabscom.`team` VALUES (2,3,'2017-09-16 07:05:05','2017-09-16 07:05:05'),(2,4,'2017-09-16 07:36:03','2017-09-16 07:36:03');
+/*!40000 ALTER TABLE estecnicslabscom.`team` ENABLE KEYS */;
+UNLOCK TABLES;
