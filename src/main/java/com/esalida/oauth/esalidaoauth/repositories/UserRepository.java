@@ -5,7 +5,6 @@ import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.User;
 
 import java.util.List;
-import java.util.Map;
 
 
 /**
@@ -18,5 +17,5 @@ public interface UserRepository {
     User findByEmailAndTenantId(String email, Long tenantId);
     User findByUsernameAndTenantId(String username, Long tenantId);
     List<Employee> fetchAllEmployess(Long tenantId);
-
-    }
+    List<Employee> fetchEmployeeDetails(Long userId);
+}

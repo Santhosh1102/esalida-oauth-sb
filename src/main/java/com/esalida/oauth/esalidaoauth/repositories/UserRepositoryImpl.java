@@ -96,8 +96,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findByUsernameAndTenantId(String username, Long tenantId){
         String QUERY_USER = "select * from user where username=:username and tenantId=:tenantId";
-        System.out.println(username+" "+tenantId+"+++++++++");
-
         try(Connection con = sql2o.open()) {
             User user =con.createQuery(QUERY_USER)
                     .addParameter("username", username)
@@ -133,7 +131,43 @@ public class UserRepositoryImpl implements UserRepository {
                     String role = (String) map.get("name");
                     Long id = (Long) map.get("id");
                     String email = (String) map.get("email");
-                    System.out.println(firstName);
+
+                    Employee employee=new Employee();
+
+                    employee.setFirstName(firstName);
+                    employee.setLastName(lastName);
+                    employee.setRoles(role);
+                    employee.setUserId(id);
+                    employee.setEmail(email);
+                    employeeList.add(employee);
+                });
+
+            }
+            return employeeList;
+        }
+    }
+
+    @Override
+    public List<Employee> fetchEmployeeDetails(Long userId) {
+
+        String query = "select u.id,u.email, r.name, up.firstName, up.lastName from user u \n" +
+                "inner join user_role ur on u.id = ur.userid \n" +
+                "inner join role r on r.id = ur.roleId  \n" +
+                "inner join  user_profile up on up.userId = u.id \n" +
+                "where u.id = :userId\n";
+        try (Connection con = sql2o.open()) {
+            List<Map<String, Object>> maps = con.createQuery(query)
+                    .addParameter("userId", userId)
+                    .executeAndFetchTable()
+                    .asList();
+            List<Employee> employeeList = new ArrayList<>();
+            if (!maps.isEmpty()) {
+                maps.stream().forEach(map -> {
+                    String firstName = (String) map.get("firstname");
+                    String lastName = (String) map.get("lastname");
+                    String role = (String) map.get("name");
+                    Long id = (Long) map.get("id");
+                    String email = (String) map.get("email");
 
                     Employee employee=new Employee();
 

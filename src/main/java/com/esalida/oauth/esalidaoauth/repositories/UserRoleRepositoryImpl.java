@@ -2,6 +2,7 @@ package com.esalida.oauth.esalidaoauth.repositories;
 
 import com.esalida.oauth.esalidaoauth.models.Role;
 import com.esalida.oauth.esalidaoauth.models.User;
+import com.esalida.oauth.esalidaoauth.models.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
@@ -52,6 +53,22 @@ public class UserRoleRepositoryImpl implements UserRoleRepository {
                     .executeAndFetch(Role.class);
 
             return roles;
+        }
+    }
+
+
+    @Override
+    public boolean updateRole(UserRole userRole){
+        String query = "update user_role set roleId=:roleId where userId=:userId";
+        try(Connection con = sql2o.open()) {
+
+            con.createQuery(query)
+                    .addParameter("userId", userRole.getUserId())
+                    .addParameter("roleId", userRole.getRoleId())
+                    .executeUpdate()
+                    .getKey();
+            return true;
+
         }
     }
 

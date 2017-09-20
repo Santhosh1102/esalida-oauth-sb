@@ -12,6 +12,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/user").authenticated();
+                .antMatchers("/user").authenticated()
+                .antMatchers("/admin/employee/{userId}/role/{rolename}").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
+                .antMatchers("/admin/employee").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
+                .antMatchers("/admin/employee/all").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
+                .antMatchers("/admin/employee/{id}/profile").hasAnyRole("ROLE_ADMIN", "ADMIN")
+                .antMatchers("/admin/employee/{userId}/profile").hasAnyRole("ROLE_ADMIN", "ADMIN")
+                .antMatchers("/admin/employee/{userId}/role/{rolename}").hasAnyAuthority("ROLE_ADMIN", "ADMIN");
     }
 }
