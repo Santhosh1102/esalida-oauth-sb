@@ -4,7 +4,10 @@ import com.esalida.oauth.esalidaoauth.config.CustomUserDetails;
 import com.esalida.oauth.esalidaoauth.models.User;
 import com.esalida.oauth.esalidaoauth.models.UserProfile;
 import com.esalida.oauth.esalidaoauth.repositories.UserRepository;
+import com.esalida.oauth.esalidaoauth.repositories.UserRepositoryImpl;
 import com.esalida.oauth.esalidaoauth.services.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,8 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @SpringBootApplication
 public class EsalidaOauthApplication {
 
+	private Logger logger = LoggerFactory.getLogger(EsalidaOauthApplication.class);
 
-    @Autowired
+	@Autowired
     private PasswordEncoder passwordEncoder;
 
 
@@ -33,6 +37,7 @@ public class EsalidaOauthApplication {
 	private UserDetailsService userDetailsService(UserService userService) {
 		return (userName) ->{
 			CustomUserDetails customUserDetails = userService.getCustomerUserDetailsByUserName(userName);
+			logger.debug("user details {}", customUserDetails );
 			return customUserDetails;
 		};
 	}

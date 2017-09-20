@@ -1,7 +1,6 @@
 package com.esalida.oauth.esalidaoauth.repositories;
 
 import com.esalida.oauth.esalidaoauth.models.Role;
-import com.esalida.oauth.esalidaoauth.models.Tenant;
 import com.esalida.oauth.esalidaoauth.models.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

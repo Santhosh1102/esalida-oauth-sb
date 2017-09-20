@@ -62,7 +62,9 @@ public class UserService {
            UserProfile userProfile = getUserProfileByUser(user);
            Tenant tenant = tenantRepository.getTenantById(user.getTenantId());
            CustomUserDetails customUserDetails = new CustomUserDetails(user);
-           customUserDetails.setUserProfile(userProfile);
+           if(userProfile!=null){
+               customUserDetails.setUserProfile(userProfile);
+           }
            customUserDetails.setTenant(tenant);
            return customUserDetails;
        }
