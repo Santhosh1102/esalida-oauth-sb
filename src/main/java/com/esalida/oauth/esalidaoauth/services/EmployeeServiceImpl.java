@@ -4,11 +4,14 @@ import com.esalida.oauth.esalidaoauth.models.*;
 import com.esalida.oauth.esalidaoauth.repositories.RoleRepository;
 import com.esalida.oauth.esalidaoauth.repositories.UserProfileRepository;
 import com.esalida.oauth.esalidaoauth.repositories.UserRepository;
-import com.esalida.oauth.esalidaoauth.repositories.UserRepositoryImpl;
+import com.esalida.oauth.esalidaoauth.repositories.UserRoleRepository;
 import com.esalida.oauth.esalidaoauth.utils.UserPrincipleUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,12 +30,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     UserRepository userRepository;
     UserProfileRepository userProfileRepository;
     RoleRepository roleRepository;
+    UserRoleRepository userRoleRepository;
     @Autowired
-    EmployeeServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository, RoleRepository roleRepository){
+    EmployeeServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository, RoleRepository roleRepository, UserRoleRepository userRoleRepository){
 
         this.userRepository=userRepository;
         this.userProfileRepository=userProfileRepository;
         this.roleRepository=roleRepository;
+        this.userRoleRepository=userRoleRepository;
+    }
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Override
@@ -53,7 +63,8 @@ public class EmployeeServiceImpl implements EmployeeService {
             User user=new User();
             user.setUserName(username);
             user.setEmail(email);
-            user.setPassword(password);
+            user.setPassword(getPasswordEncoder().encode(password));
+            user.setTenantId(UserPrincipleUtils.getPrinciple().getTenant().getId());
 
             User savedUser = userRepository.save(user);
 
@@ -87,6 +98,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         return userRepository.fetchAllEmployess(tenantId);
     }
 
+
+    public List<Employee> fetchEmployeeBasedOnId(Long userId){
+        List<Employee> employeeList = userRepository.fetchEmployeeDetails(userId);
+        return employeeList;
+    }
+
     @Override
     public UserProfile updateUserProfile(UserProfile userProfile){
 
@@ -101,5 +118,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         }else {
             return null;
         }
+    }
+
+
+    @Override
+    public boolean updateRole(Long userId, String strRole){
+        User user = userRepository.findById(userId);
+        UserRole userRole=new UserRole();
+        if(user!=null){
+            userRole.setUserId(userId);
+            if(strRole.equals("admin")){
+                userRole.setRoleId(new Long(1));
+            }else if(strRole.equals("manager")){
+                userRole.setRoleId(new Long(3));
+            }else if(strRole.equals("employee")){
+                userRole.setRoleId(new Long(2));
+            }else {
+                return false;
+            }
+            logger.info("userId {}, roleId {}", userRole.getUserId(), userRole.getRoleId());
+            return userRoleRepository.updateRole(userRole);
+        }
+        return false;
     }
 }
