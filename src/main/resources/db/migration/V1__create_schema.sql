@@ -217,9 +217,6 @@ CREATE TABLE `oauth_refresh_token` (
 
 
 
-
-
-
 CREATE DATABASE IF NOT EXISTS estecnicslabscom;
 
 DROP TABLE IF EXISTS estecnicslabscom.`team`;

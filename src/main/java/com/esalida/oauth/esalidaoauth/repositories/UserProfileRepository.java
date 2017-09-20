@@ -7,5 +7,6 @@ public interface UserProfileRepository {
 
     UserProfile getUserProfileByUserId(Long userId);
     UserProfile addUserProfile(UserProfile userProfile);
+    UserProfile updateUserProfile(UserProfile userProfile);
 
-}
+    }

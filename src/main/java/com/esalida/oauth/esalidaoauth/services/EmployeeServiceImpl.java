@@ -4,12 +4,15 @@ import com.esalida.oauth.esalidaoauth.models.*;
 import com.esalida.oauth.esalidaoauth.repositories.RoleRepository;
 import com.esalida.oauth.esalidaoauth.repositories.UserProfileRepository;
 import com.esalida.oauth.esalidaoauth.repositories.UserRepository;
+import com.esalida.oauth.esalidaoauth.repositories.UserRepositoryImpl;
 import com.esalida.oauth.esalidaoauth.utils.UserPrincipleUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by tecnicsdev on 16/9/17.
@@ -17,6 +20,9 @@ import java.util.List;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
+
+    private Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
 
     UserRepository userRepository;
     UserProfileRepository userProfileRepository;
@@ -39,8 +45,8 @@ public class EmployeeServiceImpl implements EmployeeService {
         User userByUsername=userRepository.findByUsernameAndTenantId(username, tenantId);
 
         if(userByEmail == null && userByUsername == null){
-            System.out.println("Not Found");
-            String password=employee.getPassword();
+            String password=generatePassword();
+            logger.info("Password {}", password);
             String firstName=employee.getFirstName();
             String lastName=employee.getLastName();
 
@@ -65,7 +71,35 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             return savedUserProfile;
         }
-        System.out.println("Found");
         return null;
+    }
+
+
+    public String generatePassword(){
+        String password = UUID.randomUUID().toString().replaceAll("-", "");
+        password = password.substring(0, 10);
+        return  password;
+    }
+
+    @Override
+    public List<Employee> getAllEmployees(){
+        Long tenantId = UserPrincipleUtils.getPrinciple().getTenant().getId();
+        return userRepository.fetchAllEmployess(tenantId);
+    }
+
+    @Override
+    public UserProfile updateUserProfile(UserProfile userProfile){
+
+        UserProfile userProfileFromDb = userProfileRepository.getUserProfileByUserId(userProfile.getUserId());
+        if(userProfileFromDb!=null){
+
+            userProfileFromDb.setFirstName(userProfile.getFirstName());
+            userProfileFromDb.setLastName(userProfile.getLastName());
+
+            return userProfileRepository.updateUserProfile(userProfile);
+
+        }else {
+            return null;
+        }
     }
 }
