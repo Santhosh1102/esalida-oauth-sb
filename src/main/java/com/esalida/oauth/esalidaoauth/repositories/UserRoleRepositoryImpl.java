@@ -37,7 +37,6 @@ public class UserRoleRepositoryImpl implements UserRoleRepository {
                         .addParameter("userId",user.getId())
                         .executeUpdate();
             }
-
         }
     }
 

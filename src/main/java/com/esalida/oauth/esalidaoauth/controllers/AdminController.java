@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 public class AdminController {
@@ -43,4 +44,19 @@ public class AdminController {
         }
     }
 
+    @RequestMapping(value = "/api/admin/employee/all")
+    ResponseEntity<List<Employee>> getAllEmployees(){
+        List<Employee> allEmployees = employeeService.getAllEmployees();
+        return new ResponseEntity<>(allEmployees, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/api/admin/employee/{id}/profile", method = RequestMethod.POST)
+    ResponseEntity<UserProfile> updateUserProfile(@Valid @RequestBody  UserProfile userProfile){
+        UserProfile userProfileFromService = employeeService.updateUserProfile(userProfile);
+        if(userProfileFromService==null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
+    }
 }

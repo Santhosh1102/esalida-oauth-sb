@@ -1,5 +1,6 @@
 package com.esalida.oauth.esalidaoauth.repositories;
 
+import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.Role;
 import com.esalida.oauth.esalidaoauth.models.User;
 
@@ -12,7 +13,9 @@ import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -80,7 +83,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findByEmailAndTenantId(String email, Long tenantId){
         String QUERY_USER = "select * from user where email=:email and tenantId=:tenantId";
-        System.out.println(email+" "+tenantId+"----------");
         try(Connection con = sql2o.open()) {
             User user =con.createQuery(QUERY_USER)
                     .addParameter("email", email)
@@ -104,6 +106,47 @@ public class UserRepositoryImpl implements UserRepository {
             logger.debug("Found users:{}",user);
 
             return user;
+        }
+    }
+
+    @Override
+    public List<Employee> fetchAllEmployess(Long tenantId) {
+
+        String query = "select u.id,u.email, r.name, up.firstName, up.lastName from user u \n" +
+                "inner join user_role ur on u.id = ur.userid \n" +
+                "inner join role r on r.id = ur.roleId  \n" +
+                "inner join  user_profile up on up.userId = u.id \n" +
+                "where u.tenantId = :tenantId\n";
+        try (Connection con = sql2o.open()) {
+            List<Map<String, Object>> maps = con.createQuery(query)
+                    .addParameter("tenantId", tenantId)
+                    .executeAndFetchTable()
+                    .asList();
+            List<Employee> employeeList = new ArrayList<>();
+            if (!maps.isEmpty()) {
+
+                maps.stream().forEach(map -> {
+
+                    System.out.println(map.keySet());
+                    String firstName = (String) map.get("firstname");
+                    String lastName = (String) map.get("lastname");
+                    String role = (String) map.get("name");
+                    Long id = (Long) map.get("id");
+                    String email = (String) map.get("email");
+                    System.out.println(firstName);
+
+                    Employee employee=new Employee();
+
+                    employee.setFirstName(firstName);
+                    employee.setLastName(lastName);
+                    employee.setRoles(role);
+                    employee.setUserId(id);
+                    employee.setEmail(email);
+                    employeeList.add(employee);
+                });
+
+            }
+            return employeeList;
         }
     }
 }

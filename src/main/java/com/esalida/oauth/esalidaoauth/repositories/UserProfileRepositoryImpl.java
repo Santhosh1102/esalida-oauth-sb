@@ -45,4 +45,19 @@ public class UserProfileRepositoryImpl implements UserProfileRepository{
             return getUserProfileByUserId(userProfile.getUserId());
         }
     }
+
+    @Override
+    public UserProfile updateUserProfile(UserProfile userProfile) {
+        String QUERY_USER_INSERT = "UPDATE `user_profile` SET firstName=:firstName, lastName=:lastName\n" +
+                "where userId=:userId;";
+        try(Connection con = sql2o.open()) {
+            con.createQuery(QUERY_USER_INSERT)
+                    .addParameter("userId",userProfile.getUserId())
+                    .addParameter("firstName",userProfile.getFirstName())
+                    .addParameter("lastName",userProfile.getLastName())
+                    .executeUpdate()
+                    .getKey();
+            return getUserProfileByUserId(userProfile.getUserId());
+        }
+    }
 }
