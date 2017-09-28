@@ -10,14 +10,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
+
         http
                 .authorizeRequests()
                 .antMatchers("/user").authenticated()
-                .antMatchers("/admin/employee/{userId}/role/{rolename}").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
-                .antMatchers("/admin/employee").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
-                .antMatchers("/admin/employee/all").hasAnyAuthority("ROLE_ADMIN", "ADMIN")
-                .antMatchers("/admin/employee/{id}/profile").hasAnyRole("ROLE_ADMIN", "ADMIN")
-                .antMatchers("/admin/employee/{userId}/profile").hasAnyRole("ROLE_ADMIN", "ADMIN")
-                .antMatchers("/admin/employee/{userId}/role/{rolename}").hasAnyAuthority("ROLE_ADMIN", "ADMIN");
+                .antMatchers("/api/admin/**").hasAnyAuthority("ROLE_ADMIN");
+
     }
 }
