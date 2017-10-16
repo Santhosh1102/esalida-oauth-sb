@@ -11,7 +11,7 @@ public class Tenant implements Serializable{
     private String tenantName;
     private String tenantDomain;
     private String tenantDbName;
-
+    private String tenantUniqueIdentifier;
 
     public Long getId() {
         return id;
@@ -43,5 +43,13 @@ public class Tenant implements Serializable{
 
     public void setTenantDbName(String tenantDbName) {
         this.tenantDbName = tenantDbName;
+    }
+
+    public String getTenantUniqueIdentifier() {
+        return tenantUniqueIdentifier;
+    }
+
+    public void setTenantUniqueIdentifier(String tenantUniqueIdentifier) {
+        this.tenantUniqueIdentifier = tenantUniqueIdentifier;
     }
 }
