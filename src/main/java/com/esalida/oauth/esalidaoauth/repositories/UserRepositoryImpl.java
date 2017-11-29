@@ -70,7 +70,7 @@ public class UserRepositoryImpl implements UserRepository {
         try(Connection con = sql2o.open()) {
             long insertedId = (long) con.createQuery(QUERY_USER_INSERT)
                    .addParameter("userName",user.getUserName())
-                   .addParameter("email",user.getUserName())
+                   .addParameter("email",user.getEmail())
                    .addParameter("password",user.getPassword())
                    .addParameter("tenantId",user.getTenantId())
                    .executeUpdate()
