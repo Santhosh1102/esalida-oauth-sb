@@ -28,7 +28,7 @@ CREATE TABLE `estecnicslabscom`.`sharedCollections` (
  `sharedUserId` BIGINT(20) NOT NULL,
  PRIMARY KEY (`collectionId`, `sharedUserId`),
  UNIQUE INDEX `id_UNIQUE` (`id` ASC),
- CONSTRAINT `id`
+ CONSTRAINT
  FOREIGN KEY (`collectionId`)
  REFERENCES `estecnicslabscom`.`collections` (`id`)
  ON DELETE NO ACTION
