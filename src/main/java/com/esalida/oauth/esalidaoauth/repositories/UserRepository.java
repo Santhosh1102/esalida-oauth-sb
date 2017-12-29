@@ -18,4 +18,5 @@ public interface UserRepository {
     User findByUsernameAndTenantId(String username, Long tenantId);
     List<Employee> fetchAllEmployess(Long tenantId);
     List<Employee> fetchEmployeeDetails(Long userId);
+    User updatePassword(Long userId, String password);
 }

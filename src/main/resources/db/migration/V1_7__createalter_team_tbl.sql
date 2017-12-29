@@ -1,0 +1,1 @@
+ALTER TABLE estecnicslabscom.team ADD COLUMN userActivation BOOLEAN DEFAULT 1;

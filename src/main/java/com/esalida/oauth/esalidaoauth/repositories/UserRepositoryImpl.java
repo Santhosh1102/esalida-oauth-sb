@@ -183,4 +183,17 @@ public class UserRepositoryImpl implements UserRepository {
             return employeeList;
         }
     }
+
+    @Override
+    public User updatePassword(Long userId, String password) {
+        String query = "update user set password=:password where userId=:userId";
+        try(Connection con = sql2o.open()) {
+            long insertedId = (long) con.createQuery(query)
+                    .addParameter("password",password)
+                    .addParameter("userId", userId)
+                    .executeUpdate()
+                    .getKey();
+            return findById(insertedId);
+        }
+    }
 }
