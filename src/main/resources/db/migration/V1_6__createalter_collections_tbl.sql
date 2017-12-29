@@ -13,8 +13,7 @@ CREATE TABLE `estecnicslabscom`.`collectioninfo` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `docId` varchar(45) DEFAULT NULL,
   `type` varchar(45) DEFAULT NULL,
-  `collectionId` int boolQueryBuilder = boolQueryBuilder.must(QueryBuilders.matchQuery(facetPayload.getFacetMeta()
-                                .get(i).getField(), selectedFilter));(11) DEFAULT NULL,
+  `collectionId` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `uq_collectioninfo` (`docId`,`collectionId`),
   KEY `fk_collectioninfo_1_idx` (`collectionId`),
