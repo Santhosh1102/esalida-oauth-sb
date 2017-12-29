@@ -16,4 +16,5 @@ public interface UserRoleRepository {
     boolean updateRole(UserRole userRole);
 
     void clearRolesForUser(Long userID);
+
 }

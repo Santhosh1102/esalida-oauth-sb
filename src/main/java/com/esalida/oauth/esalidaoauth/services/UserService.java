@@ -91,5 +91,9 @@ public class UserService {
         userRoleRepository.updateRolesAsAdmin(user);
         return userRoleRepository.getUserRoles(user);
     }
+    public User updatePassword(Long userId, String password){
+        String encryptedPassword = getPasswordEncoder().encode(password);
+        return userRepository.updatePassword(userId, encryptedPassword);
+    }
 
 }
