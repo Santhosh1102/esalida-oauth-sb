@@ -3,12 +3,9 @@ package com.esalida.oauth.esalidaoauth.repositories;
 import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.Role;
 import com.esalida.oauth.esalidaoauth.models.User;
-
-import com.esalida.oauth.esalidaoauth.models.UserProfile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Repository;
 import org.sql2o.Connection;
 import org.sql2o.Sql2o;
@@ -186,14 +183,14 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User updatePassword(Long userId, String password) {
-        String query = "update user set password=:password where userId=:userId";
+        String query = "update user set password=:password where id=:userId";
         try(Connection con = sql2o.open()) {
-            long insertedId = (long) con.createQuery(query)
+           con.createQuery(query)
                     .addParameter("password",password)
                     .addParameter("userId", userId)
                     .executeUpdate()
                     .getKey();
-            return findById(insertedId);
+           return findById(userId);
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.esalida.oauth.esalidaoauth.controllers;
 
 
-import com.esalida.oauth.esalidaoauth.config.CustomUserDetails;
 import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.User;
 import com.esalida.oauth.esalidaoauth.models.UserProfile;
@@ -10,13 +9,13 @@ import com.esalida.oauth.esalidaoauth.services.EmployeeService;
 import com.esalida.oauth.esalidaoauth.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.jws.soap.SOAPBinding;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
@@ -52,14 +51,14 @@ public class AdminController {
         }
     }
 
-    @RequestMapping(value = "update/password/{userId}/{password}", method = RequestMethod.GET)
-    ResponseEntity<User> updatePassword(@Valid @PathVariable Long userId, @PathVariable String password ) {
+    @RequestMapping(value = "password", method = RequestMethod.POST)
+    ResponseEntity<User> updatePassword(RequestEntity<User> userInfo) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Collection<? extends GrantedAuthority> principal = authentication.getAuthorities();
 
         boolean adminFlag = principal.stream().anyMatch(auth->auth.getAuthority().contains("ROLE_ADMIN"));
         if(adminFlag){
-            User user = userService.updatePassword(userId, password);
+            User user = userService.updatePassword(userInfo.getBody());
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
