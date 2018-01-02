@@ -23,7 +23,7 @@ public class UserProfileRepositoryImpl implements UserProfileRepository{
 
     @Override
     public UserProfile getUserProfileByUserId(Long userId) {
-        String QUERY_USER_INSERT = "select * from user_profile where userId=:userId";
+        String QUERY_USER_INSERT = "select up.* from esalidaoauth.user_profile as up inner join esalidaoauth.user as u on u.id = up.userId where up.userId=:userId and u.activated=1;";
         try(Connection con = sql2o.open()) {
             return con.createQuery(QUERY_USER_INSERT)
                     .addParameter("userId", userId)
