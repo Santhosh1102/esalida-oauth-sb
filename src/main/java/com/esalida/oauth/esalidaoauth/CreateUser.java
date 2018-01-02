@@ -1,4 +1,4 @@
-package com.esalida.oauth.esalidaoauth.utils;
+package com.esalida.oauth.esalidaoauth;
 
 import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.User;

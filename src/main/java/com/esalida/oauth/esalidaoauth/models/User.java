@@ -13,15 +13,17 @@ public class User {
     private Long tenantId;
     private Date created_at;
     private Date updated_at;
+    private Boolean activated;
 
     public User() {}
 
-    public User(String userName, String email, String password, List<Role> roles, Long tenantId) {
+    public User(String userName, String email, String password, List<Role> roles, Long tenantId, Boolean activated) {
         this.userName = userName;
         this.email = email;
         this.password = password;
         this.roles = roles;
         this.tenantId = tenantId;
+        this.setActivated(activated);
     }
 
     public Date getCreated_at() {
@@ -100,5 +102,13 @@ public class User {
                 ", created_at=" + created_at +
                 ", updated_at=" + updated_at +
                 '}';
+    }
+
+    public Boolean getActivated() {
+        return activated;
+    }
+
+    public void setActivated(Boolean activated) {
+        this.activated = activated;
     }
 }

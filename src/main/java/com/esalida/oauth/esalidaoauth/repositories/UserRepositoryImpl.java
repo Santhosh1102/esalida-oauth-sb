@@ -114,7 +114,7 @@ public class UserRepositoryImpl implements UserRepository {
                 "inner join user_role ur on u.id = ur.userid \n" +
                 "inner join role r on r.id = ur.roleId  \n" +
                 "inner join  user_profile up on up.userId = u.id \n" +
-                "where u.tenantId = :tenantId\n";
+                "where u.tenantId = :tenantId and u.activated=1\n";
         try (Connection con = sql2o.open()) {
             List<Map<String, Object>> maps = con.createQuery(query)
                     .addParameter("tenantId", tenantId)
