@@ -3,6 +3,7 @@ package com.esalida.oauth.esalidaoauth.repositories;
 
 import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.User;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface UserRepository {
     List<Employee> fetchAllEmployess(Long tenantId);
     List<Employee> fetchEmployeeDetails(Long userId);
     User updatePassword(Long userId, String password);
+    JsonNode deleteUser(Long userId, Long tenantId);
 }

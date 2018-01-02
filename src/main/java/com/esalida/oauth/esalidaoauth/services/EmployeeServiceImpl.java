@@ -6,6 +6,7 @@ import com.esalida.oauth.esalidaoauth.repositories.UserProfileRepository;
 import com.esalida.oauth.esalidaoauth.repositories.UserRepository;
 import com.esalida.oauth.esalidaoauth.repositories.UserRoleRepository;
 import com.esalida.oauth.esalidaoauth.utils.UserPrincipleUtils;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,5 +142,11 @@ public class EmployeeServiceImpl implements EmployeeService {
             return userRoleRepository.updateRole(userRole);
         }
         return false;
+    }
+
+    @Override
+    public JsonNode deleteEmployee(Long userId){
+        Long tenantId = UserPrincipleUtils.getPrinciple().getTenant().getId();
+        return userRepository.deleteUser(userId, tenantId);
     }
 }

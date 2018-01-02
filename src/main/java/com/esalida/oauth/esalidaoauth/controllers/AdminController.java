@@ -7,6 +7,7 @@ import com.esalida.oauth.esalidaoauth.models.UserProfile;
 import com.esalida.oauth.esalidaoauth.models.UserRole;
 import com.esalida.oauth.esalidaoauth.services.EmployeeService;
 import com.esalida.oauth.esalidaoauth.services.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
@@ -99,5 +100,21 @@ public class AdminController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
+    @RequestMapping(value = "employee/{userId}", method = RequestMethod.DELETE,
+            produces="application/json")
+    public ResponseEntity<JsonNode> deleteEmployee(@Valid @PathVariable("userId") Long userId) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> principal = authentication.getAuthorities();
+
+        boolean adminFlag = principal.stream().anyMatch(auth->auth.getAuthority().contains("ROLE_ADMIN"));
+        if(adminFlag){
+            return new ResponseEntity<JsonNode>(employeeService.deleteEmployee(userId), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        }
     }
 }

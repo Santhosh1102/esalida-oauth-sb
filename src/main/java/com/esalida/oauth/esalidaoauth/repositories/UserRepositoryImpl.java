@@ -3,6 +3,9 @@ package com.esalida.oauth.esalidaoauth.repositories;
 import com.esalida.oauth.esalidaoauth.models.Employee;
 import com.esalida.oauth.esalidaoauth.models.Role;
 import com.esalida.oauth.esalidaoauth.models.User;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -192,5 +195,23 @@ public class UserRepositoryImpl implements UserRepository {
                     .getKey();
            return findById(userId);
         }
+    }
+
+    @Override
+    public JsonNode deleteUser(Long userId, Long tenantId){
+        String query = "update user set activated=0 where tenantId=:tenantId AND id=:userId";
+        int result=0;
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode jsonNode = mapper.createObjectNode();
+        try(Connection con = sql2o.open()) {
+            result = con.createQuery(query).addParameter("tenantId", tenantId).addParameter("userId",userId)
+                    .executeUpdate().getResult();
+        }
+        if(result > 0){
+            ((ObjectNode) jsonNode).put("status", "User  successfully removed");
+        } else {
+            ((ObjectNode) jsonNode).put("status", "Failed to remove User");
+        }
+        return jsonNode;
     }
 }
