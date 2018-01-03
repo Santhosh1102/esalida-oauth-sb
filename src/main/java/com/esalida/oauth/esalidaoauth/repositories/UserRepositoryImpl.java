@@ -193,4 +193,17 @@ public class UserRepositoryImpl implements UserRepository {
            return findById(userId);
         }
     }
+
+    @Override
+    public User findByEmail(String email){
+        String QUERY_USER = "select * from user where email=:email";
+        try(Connection con = sql2o.open()) {
+            User user =con.createQuery(QUERY_USER)
+                    .addParameter("email", email)
+                    .executeAndFetchFirst(User.class);
+            logger.debug("Found users:{}",user);
+            return user;
+        }
+    }
+
 }
