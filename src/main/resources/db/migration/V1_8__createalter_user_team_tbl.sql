@@ -1,0 +1,1 @@
+ALTER TABLE estecnicslabscom.team ADD PRIMARY KEY(managerId,userId);
