@@ -55,21 +55,34 @@ public class UserService {
         return user;
     }
 
+    public  User findUserByEmail(String email){
+        User user = userRepository.findByEmail(email);
+        if(user!=null){
+            List<Role> roles = roleRepository.getRolesForUserId(user.getId());
+            user.setRoles(roles);
+        }
+        return user;
+    }
+
     public CustomUserDetails getCustomerUserDetailsByUserName(String userName){
-
-       User user = findUserByName(userName);
-       if(user!=null){
-           UserProfile userProfile = getUserProfileByUser(user);
-           Tenant tenant = tenantRepository.getTenantById(user.getTenantId());
-           CustomUserDetails customUserDetails = new CustomUserDetails(user);
-           if(userProfile!=null){
+        userName=userName.trim();
+        User user;
+        if(userName.contains("@")) {
+            user = findUserByEmail(userName);
+        } else {
+            user = findUserByName(userName);
+        }
+        if(user!=null){
+            UserProfile userProfile = getUserProfileByUser(user);
+            Tenant tenant = tenantRepository.getTenantById(user.getTenantId());
+            CustomUserDetails customUserDetails = new CustomUserDetails(user);
+            if(userProfile!=null){
                customUserDetails.setUserProfile(userProfile);
-           }
-           customUserDetails.setTenant(tenant);
-           return customUserDetails;
-       }
-       return null;
-
+            }
+            customUserDetails.setTenant(tenant);
+            return customUserDetails;
+        }
+        return null;
     }
 
 

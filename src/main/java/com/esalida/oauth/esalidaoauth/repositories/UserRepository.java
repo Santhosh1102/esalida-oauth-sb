@@ -15,6 +15,7 @@ public interface UserRepository {
     User findById(long userId);
     User save(User user);
     User findByEmailAndTenantId(String email, Long tenantId);
+    User findByEmail(String email);
     User findByUsernameAndTenantId(String username, Long tenantId);
     List<Employee> fetchAllEmployess(Long tenantId);
     List<Employee> fetchEmployeeDetails(Long userId);
