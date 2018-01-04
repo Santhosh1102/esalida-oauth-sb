@@ -37,7 +37,7 @@ public class OAuthProvider extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory().withClient("oauth-client")
-                .authorizedGrantTypes("client_credentials", "password")
+                .authorizedGrantTypes("client_credentials", "password", "refresh_token")
                 .authorities("ROLE_CLIENT","ROLE_TRUSTED_CLIENT").scopes("read","write","trust")
                 .resourceIds("oauth2-resource").accessTokenValiditySeconds(5000)
                 .secret("secret");
